@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dubrovnik Trip Planner - 5-9 kwietnia 2026</title>
+    <style>
+      :root {
+        --color-primary: #0284c7;
+        --color-primary-dark: #0369a1;
+        --color-bg: #f8fafc;
+        --color-surface: #ffffff;
+        --color-text: #0f172a;
+        --color-text-secondary: #475569;
+        --color-border: #e2e8f0;
+        --color-success: #059669;
+        --color-warning: #d97706;
+        --color-danger: #dc2626;
+        --color-got: #8b0000;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --color-bg: #0f172a;
+          --color-surface: #1e293b;
+          --color-text: #f1f5f9;
+          --color-text-secondary: #cbd5e1;
+          --color-border: #334155;
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        background: var(--color-bg);
+        color: var(--color-text);
+        line-height: 1.6;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .header h1 {
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .header p {
+        opacity: 0.95;
+        font-size: 0.95rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 1rem;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+      }
+
+      .tab {
+        background: var(--color-surface);
+        border: 2px solid var(--color-border);
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.2s;
+        font-weight: 500;
+      }
+
+      .tab:hover {
+        border-color: var(--color-primary);
+      }
+
+      .tab.active {
+        background: var(--color-primary);
+        color: white;
+        border-color: var(--color-primary);
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .card {
+        background: var(--color-surface);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        border: 1px solid var(--color-border);
+      }
+
+      .card h2 {
+        color: var(--color-primary);
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .card h3 {
+        color: var(--color-text);
+        margin-top: 1.5rem;
+        margin-bottom: 0.75rem;
+        font-size: 1.2rem;
+      }
+
+      .day-header {
+        background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+
+      .timeline-item {
+        border-left: 3px solid var(--color-primary);
+        padding-left: 1.5rem;
+        margin-bottom: 1.5rem;
+        position: relative;
+      }
+
+      .timeline-item::before {
+        content: "";
+        width: 12px;
+        height: 12px;
+        background: var(--color-primary);
+        border-radius: 50%;
+        position: absolute;
+        left: -7.5px;
+        top: 5px;
+      }
+
+      .time-badge {
+        display: inline-block;
+        background: var(--color-primary);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .place-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--color-text);
+        margin-bottom: 0.5rem;
+      }
+
+      .got-badge {
+        display: inline-block;
+        background: var(--color-got);
+        color: white;
+        padding: 0.2rem 0.6rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+      }
+
+      .description {
+        color: var(--color-text-secondary);
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+      }
+
+      .info-row {
+        display: flex;
+        gap: 1rem;
+        margin-top: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .info-item {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+        color: var(--color-text-secondary);
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: var(--color-primary);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.2s;
+        border: none;
+        cursor: pointer;
+        margin-top: 0.5rem;
+      }
+
+      .btn:hover {
+        background: var(--color-primary-dark);
+        transform: translateY(-1px);
+      }
+
+      .btn-secondary {
+        background: var(--color-text-secondary);
+      }
+
+      .price-tag {
+        display: inline-block;
+        background: var(--color-success);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 6px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-right: 0.5rem;
+      }
+
+      .alert {
+        background: #fef3c7;
+        border-left: 4px solid var(--color-warning);
+        padding: 1rem;
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        color: #92400e;
+      }
+
+      .alert-info {
+        background: #dbeafe;
+        border-left: 4px solid var(--color-primary);
+        color: #1e3a8a;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .tip-box {
+        background: #f0fdf4;
+        border: 1px solid #86efac;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-top: 1rem;
+        color: #000;
+      }
+
+      .tip-box h4 {
+        color: var(--color-success);
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+      }
+
+      .weather-icon {
+        font-size: 2rem;
+        margin-right: 0.5rem;
+      }
+
+      .alternative-box {
+        background: #fef3f2;
+        border-left: 4px solid #f97316;
+        padding: 1rem;
+        margin-top: 1rem;
+        border-radius: 6px;
+      }
+
+      .alternative-box h4 {
+        color: #ea580c;
+        margin-bottom: 0.5rem;
+      }
+
+      @media (max-width: 768px) {
+        .header h1 {
+          font-size: 1.4rem;
+        }
+
+        .tabs {
+          gap: 0.3rem;
+        }
+
+        .tab {
+          padding: 0.6rem 1rem;
+          font-size: 0.9rem;
+        }
+
+        .card {
+          padding: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🇭🇷 Twój Wyjazd do Dubrovnika</h1>
+      <p>5-9 kwietnia 2026 | Grand Hotel Park | Przewodnik All-in-One</p>
+    </div>
+
+    <div class="container">
+      <div class="tabs">
+        <div class="tab active" onclick="showTab('overview')">📋 Przegląd</div>
+        <div class="tab" onclick="showTab('day0')">✈️ Przyjazd (5.04)</div>
+        <div class="tab" onclick="showTab('day1')">🏰 Dzień 1 (6.04)</div>
+        <div class="tab" onclick="showTab('day2')">🌊 Dzień 2 (7.04)</div>
+        <div class="tab" onclick="showTab('day3')">⛰️ Dzień 3 (8.04)</div>
+        <div class="tab" onclick="showTab('day4')">🛫 Wyjazd (9.04)</div>
+        <div class="tab" onclick="showTab('restaurants')">🍽️ Restauracje</div>
+        <div class="tab" onclick="showTab('practical')">💡 Info Praktyczne</div>
+      </div>
+
+      <!-- OVERVIEW TAB -->
+      <div id="overview" class="tab-content active">
+        <div class="card">
+          <h2>🎯 Podsumowanie Wyjazdu</h2>
+
+          <div class="alert alert-info">
+            <strong>💰 Budżet trip:</strong> Transport publiczny, lokalne
+            knajpki, Dubrovnik Pass - oszczędny plan bez utraty autentycznych
+            doświadczeń!
+          </div>
+
+          <h3>📅 Harmonogram</h3>
+          <p>
+            <strong>Niedziela 5.04:</strong> Przylot 14:00, transfer do hotelu,
+            wieczorny spacer po Lapad
+          </p>
+          <p>
+            <strong>Poniedziałek 6.04:</strong> Stare Miasto + Mury Obronne
+            (Game of Thrones)
+          </p>
+          <p>
+            <strong>Wtorek 7.04:</strong> Wyspa Lokrum + Fort Lovrijenac + Buža
+            Bar
+          </p>
+          <p>
+            <strong>Środa 8.04:</strong> Kolejka linowa na Mount Srđ + lokalne
+            odkrycia
+          </p>
+          <p>
+            <strong>Czwartek 9.04:</strong> Poranek w mieście, wymeldowanie
+            11:00, wylot 14:45
+          </p>
+
+          <h3>🌤️ Prognoza Pogody - Kwiecień</h3>
+          <div class="grid">
+            <div class="card">
+              <span class="weather-icon">🌡️</span>
+              <strong>Temperatura:</strong> 12-16°C (dni), 7°C (noce)
+            </div>
+            <div class="card">
+              <span class="weather-icon">☀️</span>
+              <strong>Słońce:</strong> 13-14h dziennie
+            </div>
+            <div class="card">
+              <span class="weather-icon">🌊</span>
+              <strong>Morze:</strong> 15°C (zimne!)
+            </div>
+            <div class="card">
+              <span class="weather-icon">🌧️</span>
+              <strong>Opady:</strong> ~10 dni deszczowych
+            </div>
+          </div>
+
+          <div class="tip-box">
+            <h4>🎒 Co spakować:</h4>
+            <p>
+              • Kurtka na wieczory (temp. spada do 7°C)<br />
+              • Wygodne buty do chodzenia (mury + kamienne uliczki)<br />
+              • Parasol/przeciwdeszczówka (kwiecień = opady)<br />
+              • Czapka/okulary przeciwsłoneczne (13-14h słońca)<br />
+              • Gotówka (niektóre miejsca jak Buža Bar tylko cash!)
+            </p>
+          </div>
+
+          <h3>💳 Dubrovnik Pass - REKOMENDACJA</h3>
+          <div class="alert">
+            <strong>✅ KUP PASS 3-DNIOWY (50 EUR)</strong><br />
+            Mury Obronne same kosztują 40 EUR - Pass się zwraca!<br /><br />
+            <strong>Co obejmuje:</strong><br />
+            • Mury Obronne Dubrovnika (must-see!)<br />
+            • Nielimitowana komunikacja miejska (autobusy)<br />
+            • 12 atrakcji muzealnych<br />
+            • Ważny 72h od pierwszego użycia<br /><br />
+            Kup online lub w Tourist Board Office przy Pile Gate
+          </div>
+
+          <h3>📍 Twój Hotel</h3>
+          <p>
+            <strong>Grand Hotel Park Dubrovnik</strong> - Lapad (3.7 km od
+            Starego Miasta)
+          </p>
+          <p>🚌 Najbliższy przystanek: Pentagon (600m od hotelu)</p>
+          <p>✨ Udogodnienia: basen, prywatna plaża, śniadanie bufetowe</p>
+          <a
+            href="https://maps.app.goo.gl/LaPadDubrovnik"
+            class="btn"
+            target="_blank"
+            >📍 Zobacz hotel na mapie</a
+          >
+        </div>
+      </div>
+
+      <!-- DAY 0 - ARRIVAL -->
+      <div id="day0" class="tab-content">
+        <div class="day-header">✈️ Niedziela 5 kwietnia - Przyjazd</div>
+
+        <div class="card">
+          <h2>🛬 Z Lotniska do Hotelu</h2>
+
+          <div class="timeline-item">
+            <span class="time-badge">14:00</span>
+            <div class="place-name">Przylot do Dubrovnika</div>
+            <div class="description">
+              Po wyjściu z terminalu kieruj się do przystanku autobusowego (na
+              zewnątrz, dobrze oznaczony)
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">~14:30</span>
+            <div class="place-name">🚌 Autobus lotnisko → Stare Miasto</div>
+            <div class="description">
+              <strong>Linia:</strong> Airport Bus (Atlas)<br />
+              <strong>Trasa:</strong> Lotnisko → Pile Gate (Stare Miasto) → Gruž
+              Bus Station<br />
+              <strong>Czas:</strong> 35 minut<br />
+              <strong>Odjazd:</strong> ~30 min po każdym przylotującym samolocie
+              (24/7)
+            </div>
+            <div class="info-row">
+              <div class="info-item">
+                <span class="price-tag">2.50 EUR</span> Bilet w autobusie
+              </div>
+            </div>
+            <div class="tip-box">
+              <h4>💡 Wskazówka:</h4>
+              <p>
+                Wysiądź na przystanku <strong>Pile Gate</strong> (główne wejście
+                do Starego Miasta), następnie przesiądź się do autobusu linii
+                miejskiej w kierunku Lapad/Grand Hotel Park
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">15:30</span>
+            <div class="place-name">🏨 Zameldowanie w Grand Hotel Park</div>
+            <div class="description">
+              Adres: Šetalište Kralja Zvonimira, Lapad<br />
+              Check-in, odpoczynek po podróży
+            </div>
+            <a
+              href="https://maps.app.goo.gl/GrandHotelParkDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">18:00-20:00</span>
+            <div class="place-name">🚶 Wieczorny spacer po Lapad</div>
+            <div class="description">
+              Twój hotel znajduje się w dzielnicy Lapad - spokojnej, lokalnej
+              części Dubrovnika z promenadą wzdłuż morza. Idealne miejsce na
+              pierwszy wieczór!
+            </div>
+
+            <h4 style="margin-top: 1rem">Co zobaczyć w Lapad:</h4>
+            <p>
+              • <strong>Uvala Lapad Beach</strong> - plaża zaraz przy hotelu,
+              promenada z palmami<br />
+              • <strong>Šetalište kralja Zvonimira</strong> - spacerowa
+              promenada wzdłuż zatoki<br />
+              • <strong>Lokalne kawiarnie</strong> - spokojniejsze i tańsze niż
+              w Starym Mieście
+            </p>
+
+            <a
+              href="https://maps.app.goo.gl/LapadPromenade"
+              class="btn"
+              target="_blank"
+              >📍 Promenada Lapad</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">20:00</span>
+            <div class="place-name">🍽️ Kolacja w okolicy hotelu</div>
+            <div class="description">
+              Opcje w Lapad (5-10 min spacerem od hotelu):
+            </div>
+
+            <div style="margin-top: 1rem">
+              <strong>Konoba Dubrava</strong> - tradycyjna chorwacka kuchnia<br />
+              💰 Budżet: 12-20 EUR/os | 🥗 Opcje wegetariańskie: TAK<br />
+              <a
+                href="https://maps.app.goo.gl/KonobaDubrava"
+                class="btn"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </div>
+          </div>
+
+          <div class="alert">
+            <strong>📱 Po przyjeździe:</strong><br />
+            • Sprawdź rozkład autobusów miejskich z aplikacji/przystanku
+            Pentagon<br />
+            • Wymień trochę gotówki (EUR używane powszechnie)<br />
+            • Odpoczynek - jutro intensywny dzień w Starym Mieście!
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 1 -->
+      <div id="day1" class="tab-content">
+        <div class="day-header">
+          🏰 Poniedziałek 6 kwietnia - Stare Miasto &amp; Game of Thrones
+        </div>
+
+        <div class="card">
+          <h2>Dzień w King's Landing</h2>
+
+          <div class="alert alert-info">
+            <strong>🎫 DZIŚ AKTYWUJ DUBROVNIK PASS!</strong><br />
+            Użyj go na murach - od tego momentu działa 72h (do środy wieczór)
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">8:00</span>
+            <div class="place-name">🥐 Śniadanie w hotelu</div>
+            <div class="description">
+              Buffet śniadanie w Grand Hotel Park - wzmocnij się przed
+              intensywnym dniem!
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">9:00</span>
+            <div class="place-name">🚌 Autobus do Pile Gate</div>
+            <div class="description">
+              Z przystanku Pentagon (600m od hotelu) linią miejską do Pile
+              Gate<br />
+              💰 GRATIS z Dubrovnik Pass!
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">9:30-13:00</span>
+            <div class="place-name">
+              🏛️ Mury Obronne Dubrovnika <span class="got-badge">⚔️ GOT</span>
+            </div>
+            <div class="description">
+              <strong>ABSOLUTNE MUST-SEE!</strong> Jedyne w swoim rodzaju
+              fortyfikacje otaczające całe Stare Miasto. To tutaj kręcono
+              większość scen King's Landing w Game of Thrones. Obejście całego
+              pierścienia zajmuje 1.5-2h, ale warto wstać wcześnie - o 9:30
+              unikniesz tłumów i upału.
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 40 EUR (objęte Dubrovnik Pass)</div>
+              <div class="info-item">📏 1940 metrów długości</div>
+              <div class="info-item">⏱️ 1.5-2h</div>
+            </div>
+            <div class="tip-box">
+              <h4>⚔️ Game of Thrones Highlights:</h4>
+              <p>
+                • Widoki na Blackwater Bay (zatoka Dubrownika)<br />
+                • Fort Minceta - najwyższa wieża (Dom Nieśmiertelnych w
+                Qarth)<br />
+                • Wejście Pile - miejsce gdzie Myrcella żegnała się z rodziną<br />
+                • Panorama na Fort Lovrijenac (Red Keep) - zobaczycie jutro z
+                bliska!
+              </p>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/DubrovnikCityWalls"
+              class="btn"
+              target="_blank"
+              >📍 Wejście na Mury</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">13:00-14:00</span>
+            <div class="place-name">🍕 Lunch - Pizzeria Tomato</div>
+            <div class="description">
+              Najtańsza pizza w okolicy Starego Miasta! Autentyczna atmosfera,
+              daleko od turystycznych pułapek.
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 7-12 EUR/pizza</div>
+              <div class="info-item">
+                🥗 Wegetariańska: Margherita, warzywna
+              </div>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/PizzeriaTomatoDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">14:30-17:00</span>
+            <div class="place-name">🚶 Spacer po Starym Mieście</div>
+
+            <h4 style="margin-top: 1rem">Trasa Spaceru:</h4>
+
+            <p>
+              <strong>1. Stradun (Placa)</strong>
+              <span class="got-badge">⚔️ GOT</span><br />
+              Główna ulica Dubrovnika (300m), kiedyś kanał oddzielający dwa
+              osiedla. Idealne miejsce na people-watching. W GOT: tutaj odbywał
+              się targ King's Landing.<br />
+              <a
+                href="https://maps.app.goo.gl/Stradun"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>2. Onofrio's Fountain</strong><br />
+              Monumentalna fontanna z 1438 roku - część wciąż działającego (!)
+              systemu wodociągów miasta. 16 masek lwa tryskających wodą.<br />
+              <a
+                href="https://maps.app.goo.gl/OnofrioFountain"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>3. Pałac Rektora</strong><br />
+              Gotycko-renesansowa perła, siedziba władcy Republiki
+              Dubrownickiej. Dziś muzeum z historycznymi eksponatami. Akustyka
+              dziedzińca wykorzystywana na koncerty!<br />
+              💰 Objęte Dubrovnik Pass | ⏱️ 45-60 min<br />
+              <a
+                href="https://maps.app.goo.gl/RectorsPalace"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>4. Katedra Wniebowzięcia NMP</strong><br />
+              Barokowa katedra z XVII wieku, skarbiec ze świętymi relikwiami i
+              dziełami sztuki dalmatyńskiej.<br />
+              <a
+                href="https://maps.app.goo.gl/DubrovnikCathedral"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>5. Ulica Św. Dominika</strong>
+              <span class="got-badge">⚔️ GOT</span><br />
+              KULTOWA scena "Walk of Shame" Cersei! Barokowe schody Jezuitów
+              (Jesuit Staircase) łączące Gundulićev trg ze Starym Miastem.<br />
+              <a
+                href="https://maps.app.goo.gl/JesuitStaircase"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <div class="alternative-box">
+              <h4>🗝️ Ukryte perełki (jeśli masz czas):</h4>
+              <p>
+                • <strong>Široka Street</strong> - cicha uliczka z lokalną
+                atmosferą, omijaną przez turystów<br />
+                • <strong>Dubrovnik Synagogue</strong> - druga najstarsza
+                synagoga w Europie (XIV w.)<br />
+                • <strong>Wąskie uliczki za Stradunem</strong> - zagubcie się
+                celowo!
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">17:00-18:00</span>
+            <div class="place-name">☕ Kawa &amp; Ciasto - Dolce Vita</div>
+            <div class="description">
+              Kolorowa kawiarenka zaraz przy Stradunie. Najlepsze torty i lody w
+              mieście według lokalnych!
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 3-6 EUR</div>
+              <div class="info-item">🍰 Muffiny, torty, gelato</div>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/DolceVitaDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">18:30-19:30</span>
+            <div class="place-name">🛍️ Shopping &amp; Pamiątki</div>
+
+            <h4>Co warto kupić:</h4>
+            <p>
+              • <strong>Koronki z Konavle</strong> (20-100 HRK ~3-13 EUR) -
+              tradycyjne hafty<br />
+              • <strong>Oliwa z oliwek z Orašac</strong> (50-200 HRK ~7-27 EUR)
+              - lokalna produkcja<br />
+              • <strong>Sól morska ze Ston</strong> (20-100 HRK) - jedna z
+              najstarszych saliny w Europie<br />
+              • <strong>Lawenda</strong> (20-100 HRK) - mydła, olejki,
+              saszetki<br />
+              • <strong>GOT pamiątki</strong> - repliki, magnesy, koszulki
+              (10-50 EUR)
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>Gdzie kupić:</strong><br />
+              • Gundulićeva Poljana Market (świeże produkty, lokalne
+              specjały)<br />
+              • Sklepy przy Stradunie<br />
+              • Franciscan Monastery Gift Shop (koronki, rękodzieło)
+            </p>
+
+            <a
+              href="https://maps.app.goo.gl/GundulicovaMarket"
+              class="btn"
+              target="_blank"
+              >📍 Targ Gundulićeva</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">20:00</span>
+            <div class="place-name">🍽️ Kolacja - Soul Kitchen</div>
+            <div class="description">
+              Fantastyczna międzynarodowa kuchnia w pięknym otoczeniu. Personel
+              świadomy alergii, doskonałe opcje wegetariańskie!
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 15-25 EUR/os</div>
+              <div class="info-item">🥗 Świetne wegetariańskie opcje</div>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/SoulKitchenDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">22:00</span>
+            <div class="place-name">🚌 Powrót do hotelu</div>
+            <div class="description">
+              Autobus z Pile Gate do Pentagon (gratis z Pass)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 2 -->
+      <div id="day2" class="tab-content">
+        <div class="day-header">
+          🌊 Wtorek 7 kwietnia - Lokrum &amp; Fort Lovrijenac
+        </div>
+
+        <div class="card">
+          <h2>Dzień na wyspie + Red Keep</h2>
+
+          <div class="timeline-item">
+            <span class="time-badge">8:30</span>
+            <div class="place-name">🥐 Śniadanie + wyjazd</div>
+            <div class="description">
+              Pakujcie: ręcznik, buty do wody, przekąski (na Lokrum drogo!)
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">9:30</span>
+            <div class="place-name">
+              ⛴️ Prom do Lokrum <span class="got-badge">⚔️ GOT</span>
+            </div>
+            <div class="description">
+              <strong>Wyspa Lokrum</strong> - rajska oaza 15 minut od Starego
+              Miasta! Sosnowe lasy, turkusowe wody, dzika przyroda i... Iron
+              Throne!
+            </div>
+            <div class="info-row">
+              <div class="info-item">
+                💰 30 EUR (dorośli), 5 EUR (dzieci 5-18)
+              </div>
+              <div class="info-item">⏱️ 15 min rejsu</div>
+              <div class="info-item">🎫 Bilet = prom + wstęp na wyspę</div>
+            </div>
+            <div class="tip-box">
+              <h4>🎟️ Gdzie kupić bilety:</h4>
+              <p>
+                • Old Town Port (kiosk przy przystani)<br />
+                • Online (zalecane w sezonie!)<br />
+                • Niektóre hotele<br /><br />
+                <strong>Odjazdy:</strong> Co 30-60 min (9:00-19:00 w sezonie)<br />
+                <strong>Ostatni prom powrotny:</strong> 19:00 (sprawdź na
+                miejscu!)
+              </p>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/LokrumFerryPort"
+              class="btn"
+              target="_blank"
+              >📍 Port Old Town</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">10:00-14:30</span>
+            <div class="place-name">🏝️ Eksploracja Wyspy Lokrum</div>
+
+            <h4>Must-see na Lokrum:</h4>
+
+            <p>
+              <strong>1. Iron Throne Replica</strong>
+              <span class="got-badge">⚔️ GOT</span><br />
+              Prawdziwa replika Żelaznego Tronu! Idealne zdjęcie pamiątkowe.
+              Znajduje się przy dawnym klasztorze benedyktynów.<br />
+              <a
+                href="https://maps.app.goo.gl/LokrumIronThrone"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Lokalizacja</a
+              >
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>2. Fort Royal</strong><br />
+              Forteca napoleońska na szczycie wyspy. 30 min wspinaczki, ale
+              widoki zapierają dech! Panorama na Dubrovnik, Adriatyk i Elafickie
+              Wyspy.<br />
+              💪 ~200 schodów | 🏔️ Najwyższy punkt wyspy
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>3. Dead Sea (Mrtvo More)</strong><br />
+              Naturalny basen skalny połączony z morzem. Krystalicznie czysta
+              woda, idealna do pływania (ale zimna w kwietniu - 15°C!).<br />
+              <a
+                href="https://maps.app.goo.gl/LokrumDeadSea"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>4. Pawie &amp; Króliki</strong><br />
+              Wyspa to rezerwat przyrody - setki dzikich królików i pawie chodzą
+              swobodnie. Super atrakcja dla miłośników zwierząt!
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>5. Benedyktyński Klasztor</strong><br />
+              Ruiny klasztoru z XI wieku, piękne ogrody botaniczne z
+              egzotycznymi roślinami.
+            </p>
+
+            <div class="alert">
+              <strong>⚠️ Uwaga:</strong><br />
+              • Wyspa bez sklepów - weź przekąski i wodę!<br />
+              • Brak prawdziwych plaż - skały i platformy<br />
+              • Morze w kwietniu zimne (15°C)<br />
+              • Ostatni prom o 19:00 - nie przegap!
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">15:00</span>
+            <div class="place-name">⛴️ Powrót promem do Dubrovnika</div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">15:30-17:00</span>
+            <div class="place-name">
+              🏰 Fort Lovrijenac (Red Keep)
+              <span class="got-badge">⚔️ GOT</span>
+            </div>
+            <div class="description">
+              "Gibraltar Dubrovnika" - fort obronny na 37-metrowej skale
+              zachodniej od murów miasta. W GOT to WŁAŚNIE TUTAJ był Red Keep
+              (Czerwona Twierdza)! Kręcono tu turniej ku czci króla Joffreya
+              (sezon 2) i scenę Tyriona z Podrickiem na murach (sezon 3).
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 Objęte biletem na Mury (lub Pass)</div>
+              <div class="info-item">📐 Trójkątny kształt</div>
+              <div class="info-item">⏱️ 1-1.5h</div>
+            </div>
+            <div class="tip-box">
+              <h4>💡 Fun fact:</h4>
+              <p>
+                Napis nad wejściem: "Non Bene Pro Toto Libertas Venditur Auro" =
+                "Wolności nie sprzedaje się za całe złoto świata"<br /><br />
+                Fort zbudowano w 3 MIESIĄCE gdy Wenecjanie chcieli go
+                zawłaszczyć - miejscowi byli szybsi!<br /><br />
+                Trzeba wspiąć się 200 stopni, ale widoki (3 tarasy!) są tego
+                warte!
+              </p>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/FortLovrijenac"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">17:30-19:00</span>
+            <div class="place-name">🍹 Sunset w Buža Bar</div>
+            <div class="description">
+              LEGENDARNY "hole-in-the-wall" bar wbudowany w mury miasta! Leżaki
+              na klifach, bezpośredni dostęp do morza, niezapomniane widoki
+              zachodu słońca nad Adriatykiem i wyspą Lokrum.
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 Piwo/drink 5-8 EUR</div>
+              <div class="info-item">💵 TYLKO GOTÓWKA!</div>
+              <div class="info-item">🌅 Najlepszy sunset w mieście</div>
+            </div>
+            <div class="alert">
+              <strong>📸 Instagram Hot Spot!</strong><br />
+              Przyjdź przed zachodem słońca (przed 18:00) żeby zająć miejsce -
+              bardzo popularny! Brak jedzenia (tylko drinki). Skoki do morza dla
+              odważnych!
+            </div>
+            <a
+              href="https://maps.app.goo.gl/BuzaBar"
+              class="btn"
+              target="_blank"
+              >📍 Jak znaleźć (ukryte wejście!)</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">19:30</span>
+            <div class="place-name">🍽️ Kolacja - Marco Polo Restaurant</div>
+            <div class="description">
+              Śródziemnomorska kuchnia z grilla. Świetne mięsa i ryby, ale też
+              doskonałe wegetariańskie opcje!
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 15-28 EUR/os</div>
+              <div class="info-item">
+                🥗 Wegetariańskie: risotto, grillowane warzywa, pasta
+              </div>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/MarcoPoloDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">21:30</span>
+            <div class="place-name">🚌 Powrót do hotelu</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 3 -->
+      <div id="day3" class="tab-content">
+        <div class="day-header">
+          ⛰️ Środa 8 kwietnia - Mount Srđ &amp; Lokalne odkrycia
+        </div>
+
+        <div class="card">
+          <h2>Widoki z góry + ukryte miejsca</h2>
+
+          <div class="timeline-item">
+            <span class="time-badge">9:00</span>
+            <div class="place-name">🥐 Śniadanie</div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">10:00</span>
+            <div class="place-name">🚌 Autobus do stacji kolejki</div>
+            <div class="description">
+              Z Pile Gate krótki spacer do dolnej stacji Dubrovnik Cable Car
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">10:30-13:30</span>
+            <div class="place-name">🚡 Kolejka linowa na Mount Srđ</div>
+            <div class="description">
+              SPEKTAKULARNE widoki z 412m n.p.m.! Panorama Starego Miasta,
+              murów, Adriatyku, wysp Elafickich. "Najdroższa na świecie" (15 EUR
+              za 3 minuty jazdy) ale absolutnie WARTO! W dzień albo o zachodzie
+              słońca - magiczne!
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 27-30 EUR (powrót)</div>
+              <div class="info-item">⏱️ 3-4 min jazda</div>
+              <div class="info-item">📏 412m wysokości</div>
+            </div>
+
+            <h4 style="margin-top: 1rem">Co zobaczyć na górze:</h4>
+            <p>
+              • <strong>Panorama Restaurant &amp; Bar</strong> - kawa/lunch z
+              najlepszym widokiem (drogie, ale monopol!)<br />
+              • <strong>Imperial Fortress</strong> - fort napoleoński, dziś
+              muzeum wojny<br />
+              • <strong>Punkt widokowy</strong> - 360° panorama, sesja
+              zdjęciowa!<br />
+              • <strong>Križ (Krzyż)</strong> - 16m kamienny krzyż na szczycie
+            </p>
+
+            <div class="tip-box">
+              <h4>💡 Oszczędzanie:</h4>
+              <p>
+                Możesz kupić bilet <strong>w jedną stronę</strong> (~20 EUR) i
+                zejść pieszo w dół (1h, malownicza trasa). Albo wejść pieszo w
+                górę rano (1.5h, trudne!) i zjechać kolejką.
+              </p>
+            </div>
+
+            <div class="alert">
+              <strong>🎫 Bilety:</strong> Kup ONLINE z wyprzedzeniem! Kolejki
+              mogą być długie (nawet 1-2h w szczycie). Strona
+              dubrovnikcablecar.com
+            </div>
+
+            <a
+              href="https://maps.app.goo.gl/DubrovnikCableCar"
+              class="btn"
+              target="_blank"
+              >📍 Dolna stacja</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">14:00-15:00</span>
+            <div class="place-name">🥪 Lunch - Mezzanave</div>
+            <div class="description">
+              NAJTAŃSZA restauracja w Dubrowniku! Pizza Margherita za 7 EUR (o 3
+              EUR taniej niż konkurencja). Lunch menu: danie główne + dodatek =
+              7 EUR!
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 7-12 EUR</div>
+              <div class="info-item">🥗 Wegetariańskie: pizza, pasta</div>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/MezzanaveDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">15:30-18:00</span>
+            <div class="place-name">🗝️ Ukryte perełki Dubrovnika</div>
+
+            <h4>Miejsca, które omijają turyści:</h4>
+
+            <p>
+              <strong>1. Šulić Beach pod Fort Lovrijenac</strong><br />
+              Jedno z najstarszych kąpielisk w Dubrowniku! Ukryte między klifami
+              poniżej Red Keep. Nawet zimą warto - usiadźcie w
+              <strong>Café Bar Dodo</strong> powyżej z ciepłym napojem i
+              podziwiajcie fale rozbijające się o skały.<br />
+              <a
+                href="https://maps.app.goo.gl/SulicBeach"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>2. Široka Street</strong><br />
+              Spokojna uliczka pełna lokalnego klimatu. Tutaj mieszkańcy, nie
+              turyści. Na szczycie schodów - piękny barokowy kościół św.
+              Ignacego (specjalny dla lokalnych przewodników!).<br />
+              <a
+                href="https://maps.app.goo.gl/SirokaStreet"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <p style="margin-top: 1rem">
+              <strong>3. Gundulićeva Poljana Market</strong><br />
+              Targ z lokalnymi produktami! Świeże owoce, warzywa, przyprawy,
+              sery, wędliny - wszystko od okolicznych farmerów. Czynny
+              codziennie 7:00-18:00 (najlepiej rano!).<br />
+              💡 Idealnie na przekąski, lokalne specjały (oliwa!), pamiątki<br />
+              <a
+                href="https://maps.app.goo.gl/GundulicovaMarket"
+                class="btn btn-secondary"
+                target="_blank"
+                >📍 Mapa</a
+              >
+            </p>
+
+            <div class="alternative-box">
+              <h4>🚶 Alternatywa: Luźny spacer</h4>
+              <p>
+                Zamiast konkretnych miejsc - po prostu zagubcie się w wąskich
+                uliczkach Starego Miasta! Odejdźcie od Stradunu i dajcie się
+                ponieść. Każda uliczka kryje małe niespodzianki: ukryte
+                kawiarenki, pracownie artystów, koty na murach, balkoniki z
+                kwiatami. To właśnie tak czują się tubylcy!
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">18:00-19:00</span>
+            <div class="place-name">☕ Kawa - Gradska Kavana Arsenal</div>
+            <div class="description">
+              Elegancka kawiarnia w historycznej lokalizacji przy wodzie. Piękna
+              atmosfera, idealna na relaks po dniu zwiedzania.
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 4-7 EUR</div>
+              <div class="info-item">🌊 Widok na port</div>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/GradskaKavanaArsenal"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">19:30</span>
+            <div class="place-name">
+              🍽️ Kolacja - Trinity Oriental Fusion Lounge
+            </div>
+            <div class="description">
+              Japońsko-fusion. Jeśli masz ochotę na odmianę od chorwackiej
+              kuchni - doskonałe sushi i azjatyckie dania. Świetna obsługa,
+              piękne wnętrze.
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 18-30 EUR/os</div>
+              <div class="info-item">🥗 Wegetariańskie sushi, tofu</div>
+            </div>
+            <a
+              href="https://maps.app.goo.gl/TrinityDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Google Maps</a
+            >
+
+            <div class="alternative-box" style="margin-top: 1rem">
+              <h4>🍝 Alternatywa: Castello</h4>
+              <p>
+                Włoska pizza i pasta. Świetne małże! Tańsza opcja (12-20
+                EUR/os).<br />
+                <a
+                  href="https://maps.app.goo.gl/CastelloDubrovnik"
+                  class="btn btn-secondary"
+                  target="_blank"
+                  >📍 Mapa</a
+                >
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">21:30</span>
+            <div class="place-name">🚌 Powrót do hotelu</div>
+            <div class="description">
+              Ostatni wieczór - spakuj się na jutrzejszy wyjazd!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY 4 - DEPARTURE -->
+      <div id="day4" class="tab-content">
+        <div class="day-header">🛫 Czwartek 9 kwietnia - Wyjazd</div>
+
+        <div class="card">
+          <h2>Ostatni poranek w Dubrowniku</h2>
+
+          <div class="timeline-item">
+            <span class="time-badge">8:00-9:00</span>
+            <div class="place-name">🥐 Śniadanie</div>
+            <div class="description">
+              Ostatnie śniadanie bufetowe w Grand Hotel Park
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">9:00-10:30</span>
+            <div class="place-name">🚶 Poranny spacer - opcjonalnie</div>
+
+            <div class="alternative-box">
+              <h4>Opcja A: Relaks przy hotelu</h4>
+              <p>
+                • Spacer po promenadzie Lapad<br />
+                • Ostatnie zdjęcia przy plaży Uvala Lapad<br />
+                • Kawa w lokalnej kawiarni (np. Chokolatin w Gruž - 10 min
+                autobusem)
+              </p>
+            </div>
+
+            <div class="alternative-box" style="margin-top: 1rem">
+              <h4>Opcja B: Ostatni skok do Starego Miasta</h4>
+              <p>
+                Jeśli macie energię - szybki autobus do Pile Gate (20 min),
+                ostatnie zakupy pamiątek, zdjęcia Stradunu w porannym świetle
+                (mniej turystów!), powrót do hotelu na 10:30
+              </p>
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">11:00</span>
+            <div class="place-name">🏨 Check-out z hotelu</div>
+            <div class="description">
+              Wymeldowanie, odbiór bagaży. Zostawcie bagaże w recepcji jeśli
+              chcecie jeszcze coś zobaczyć przed lotem!
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">11:30-12:00</span>
+            <div class="place-name">🚌 Transfer do lotniska</div>
+            <div class="description">
+              <strong>Opcja 1: Bezpośrednio z hotelu/Lapad</strong><br />
+              Autobus linii miejskiej do Gruž Bus Station, potem Airport Bus<br />
+
+              <strong>Opcja 2: Przez Pile Gate</strong><br />
+              Autobus do Pile Gate, stamtąd Airport Bus bezpośrednio na lotnisko
+            </div>
+            <div class="info-row">
+              <div class="info-item">💰 2.50 EUR (pojedynczy bilet)</div>
+              <div class="info-item">⏱️ 35-40 min</div>
+            </div>
+            <div class="alert">
+              <strong>⏰ WAŻNE:</strong> Wylot 14:45 - bądźcie na lotnisku
+              minimum o 12:45 (2h przed). Airport Bus jedzie ~35 min +
+              ewentualne oczekiwanie na odjazd. Wyjdźcie z hotelu najpóźniej o
+              11:30!
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">12:30</span>
+            <div class="place-name">🛬 Lotnisko Dubrovnik</div>
+            <div class="description">
+              Odprawa, kontrola bezpieczeństwa, boarding
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <span class="time-badge">14:45</span>
+            <div class="place-name">✈️ Odlot do Warszawy</div>
+            <div class="description">Do zobaczenia, Dubrovniku! 🇭🇷❤️</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESTAURANTS TAB -->
+      <div id="restaurants" class="tab-content">
+        <div class="card">
+          <h2>🍽️ Wszystkie Restauracje - Przegląd</h2>
+
+          <h3>💚 Wegetariańskie opcje wszędzie!</h3>
+          <p>
+            Wszystkie poniższe restauracje mają potwierdzone opcje
+            wegetariańskie.
+          </p>
+
+          <div class="timeline-item">
+            <div class="place-name">🍕 Pizzeria Tomato</div>
+            <div class="description">
+              Najtańsza pizza w okolicy Starego Miasta. Autentyczna
+              atmosfera.<br />
+              💰 7-12 EUR | 🥗 Margherita, pizza warzywna
+            </div>
+            <a
+              href="https://maps.app.goo.gl/PizzeriaTomatoDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🍽️ Soul Kitchen</div>
+            <div class="description">
+              Międzynarodowa kuchnia, piękne wnętrze. Personel świadomy
+              alergii.<br />
+              💰 15-25 EUR | 🥗 Świetne wegetariańskie dania
+            </div>
+            <a
+              href="https://maps.app.goo.gl/SoulKitchenDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🥩 Marco Polo Restaurant</div>
+            <div class="description">
+              Śródziemnomorska kuchnia z grilla. Doskonałe mięsa i ryby.<br />
+              💰 15-28 EUR | 🥗 Risotto, grillowane warzywa, pasta
+            </div>
+            <a
+              href="https://maps.app.goo.gl/MarcoPoloDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🍱 Trinity Oriental Fusion Lounge</div>
+            <div class="description">
+              Japońsko-fusion, doskonałe sushi. Świetna obsługa.<br />
+              💰 18-30 EUR | 🥗 Wegetariańskie sushi, tofu dishes
+            </div>
+            <a
+              href="https://maps.app.goo.gl/TrinityDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🍕 Mezzanave</div>
+            <div class="description">
+              NAJTAŃSZA restauracja w Dubrowniku! Lunch menu 7 EUR.<br />
+              💰 7-12 EUR | 🥗 Pizza, pasta
+            </div>
+            <a
+              href="https://maps.app.goo.gl/MezzanaveDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🍝 Castello</div>
+            <div class="description">
+              Włoska pizza i pasta. Świetne małże!<br />
+              💰 12-20 EUR | 🥗 Pizza wegetariańska, pasta primavera
+            </div>
+            <a
+              href="https://maps.app.goo.gl/CastelloDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🏠 Konoba Dubrava (Lapad)</div>
+            <div class="description">
+              Tradycyjna chorwacka kuchnia w okolicy hotelu.<br />
+              💰 12-20 EUR | 🥗 Lokalne wegetariańskie dania
+            </div>
+            <a
+              href="https://maps.app.goo.gl/KonobaDubrava"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <h3 style="margin-top: 2rem">☕ Kawiarnie &amp; Ciasta</h3>
+
+          <div class="timeline-item">
+            <div class="place-name">🍰 Dolce Vita</div>
+            <div class="description">
+              Najlepsze torty i lody w mieście! Kolorowe wnętrze.<br />
+              💰 3-6 EUR | 🍰 Muffiny, torty, gelato
+            </div>
+            <a
+              href="https://maps.app.goo.gl/DolceVitaDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">☕ Gradska Kavana Arsenal</div>
+            <div class="description">
+              Elegancka kawiarnia przy wodzie. Historyczna lokalizacja.<br />
+              💰 4-7 EUR | Widok na port
+            </div>
+            <a
+              href="https://maps.app.goo.gl/GradskaKavanaArsenal"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🍫 Chokolatin Coffee &amp; Cake (Gruž)</div>
+            <div class="description">
+              Butikowa kawiarnia z pięknymi tortami i deserami.<br />
+              💰 4-8 EUR | 10 min od hotelu autobusem
+            </div>
+            <a
+              href="https://maps.app.goo.gl/ChokolatinDubrovnik"
+              class="btn"
+              target="_blank"
+              >📍 Mapa</a
+            >
+          </div>
+
+          <h3 style="margin-top: 2rem">🥪 Budżetowe opcje (grab&amp;go)</h3>
+
+          <div class="timeline-item">
+            <div class="place-name">🥖 Sandwich Bar Pile</div>
+            <div class="description">
+              Kanapki na wynos, szybko i tanio.<br />
+              💰 3-6 EUR
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🥐 Pekarnica Pile</div>
+            <div class="description">
+              Pieczywo, kanapki - idealne na śniadanie.<br />
+              💰 2-5 EUR
+            </div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="place-name">🍔 Preša</div>
+            <div class="description">
+              Lokalny fast food wewnątrz murów. Dobre ceny!<br />
+              💰 5-10 EUR
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PRACTICAL INFO TAB -->
+      <div id="practical" class="tab-content">
+        <div class="card">
+          <h2>💡 Informacje Praktyczne</h2>
+
+          <h3>💳 Dubrovnik Pass - Szczegóły</h3>
+          <div class="alert alert-info">
+            <strong>ZDECYDOWANIE OPŁACALNY!</strong><br /><br />
+            <strong>Cena Pass 3-dniowy:</strong> 50 EUR<br />
+            <strong>Sama cena Murów Obronnych:</strong> 40 EUR<br />
+            <strong>Oszczędność:</strong> Pass zwraca się przy wejściu na mury +
+            BONUS: transport i muzea gratis!
+          </div>
+
+          <h4>Co obejmuje:</h4>
+          <p>
+            ✅ Mury Obronne Dubrovnika (40 EUR wartość)<br />
+            ✅ Nielimitowana komunikacja miejska<br />
+            ✅ Fort Lovrijenac<br />
+            ✅ Pałac Rektora<br />
+            ✅ Inne muzea (12 atrakcji łącznie)<br />
+            ✅ Ważność: 72h od pierwszego użycia
+          </p>
+
+          <h4>Gdzie kupić:</h4>
+          <p>
+            • Online: dubrovnikcard.com (zalecane!)<br />
+            • Tourist Board Office przy Pile Gate<br />
+            • Większość hoteli i większych sklepów
+          </p>
+
+          <div class="tip-box">
+            <h4>💡 Strategia użycia:</h4>
+            <p>
+              Aktywuj Pass w poniedziałek rano na Murach (dzień 1) - będzie
+              ważny do środy wieczór (dzień 3). Idealnie pokrywa główne
+              atrakcje!
+            </p>
+          </div>
+
+          <h3 style="margin-top: 2rem">🚌 Transport</h3>
+
+          <h4>Lotnisko ↔ Miasto:</h4>
+          <p>
+            <strong>Airport Bus (Atlas)</strong><br />
+            💰 2.50 EUR (bilet w autobusie)<br />
+            ⏱️ 35 minut<br />
+            🚏 Trasa: Lotnisko → Pile Gate → Gruž Bus Station<br />
+            📅 Odjazd ~30 min po każdym przylotującym samolocie (24/7)
+          </p>
+
+          <h4>Komunikacja miejska:</h4>
+          <p>
+            <strong>Ceny biletów:</strong><br />
+            • Pojedynczy (w autobusie): 2.50 EUR<br />
+            • 1-godzinny: 1.73 EUR<br />
+            • Dzienny (24h): 5.31 EUR<br />
+            • 3-dniowy: 11.95 EUR<br />
+            <br />
+            <strong>Z Dubrovnik Pass:</strong> Nielimitowany transport GRATIS!
+          </p>
+
+          <div class="tip-box">
+            <h4>🚌 Kluczowe linie:</h4>
+            <p>
+              • Z Lapad/Grand Hotel Park do Pile Gate: linie 4, 6<br />
+              • Pentagon przystanek: 600m od hotelu (najbliższy)<br />
+              • Pile Gate: główny hub komunikacyjny przy Starym Mieście
+            </p>
+          </div>
+
+          <h3 style="margin-top: 2rem">
+            💰 Budżet - Szacunkowe koszty (na osobę)
+          </h3>
+
+          <div class="grid">
+            <div class="card">
+              <h4>Transport</h4>
+              <p>
+                Lotnisko-miasto: 5 EUR (2x)<br />
+                Komunikacja: 0 EUR (Pass)<br />
+                Lokrum prom: 30 EUR<br />
+                <strong>Razem: ~35 EUR</strong>
+              </p>
+            </div>
+            <div class="card">
+              <h4>Bilety/Atrakcje</h4>
+              <p>
+                Dubrovnik Pass 3-dni: 50 EUR<br />
+                Kolejka linowa: 30 EUR<br />
+                (Mury, Fort, muzea w Pass)<br />
+                <strong>Razem: ~80 EUR</strong>
+              </p>
+            </div>
+            <div class="card">
+              <h4>Jedzenie/dzień</h4>
+              <p>
+                Śniadanie: 0 (hotel)<br />
+                Lunch: 10-15 EUR<br />
+                Kolacja: 18-25 EUR<br />
+                Kawa/ciasto: 5 EUR<br />
+                <strong>Razem: ~35 EUR/dzień</strong>
+              </p>
+            </div>
+            <div class="card">
+              <h4>Całość (4 dni)</h4>
+              <p>
+                Transport: 35 EUR<br />
+                Atrakcje: 80 EUR<br />
+                Jedzenie: 140 EUR (4 dni)<br />
+                Drinki/extra: 30 EUR<br />
+                <strong>~285 EUR/osoba</strong>
+              </p>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 2rem">🛍️ Co kupić - Pamiątki</h3>
+
+          <p><strong>Najlepsze lokalne produkty:</strong></p>
+          <p>
+            • <strong>Koronki z Konavle</strong> (20-100 HRK / 3-13 EUR) -
+            ręcznie robione hafty<br />
+            • <strong>Oliwa z oliwek</strong> (50-200 HRK / 7-27 EUR) - z
+            Orašac, cold-pressed<br />
+            • <strong>Sól morska ze Ston</strong> (20-100 HRK / 3-13 EUR) -
+            stare saliny<br />
+            • <strong>Lawenda</strong> (20-100 HRK / 3-13 EUR) - mydła, olejki,
+            saszetki<br />
+            • <strong>Rakija/Travarica</strong> (40-150 HRK / 5-20 EUR) -
+            tradycyjne nalewki<br />
+            • <strong>Game of Thrones</strong> (10-50 EUR) - repliki, pamiątki
+          </p>
+
+          <h4>Gdzie kupić:</h4>
+          <p>
+            ✅ <strong>Gundulićeva Poljana Market</strong> - targ z lokalnymi
+            produktami (7:00-18:00)<br />
+            ✅ <strong>Franciscan Monastery Gift Shop</strong> - koronki,
+            rękodzieło<br />
+            ✅ <strong>Sklepy przy Stradunie</strong> - szeroki wybór<br />
+            ✅ <strong>Lokalne sklepy w Lapad</strong> - spokojniej, czasem
+            taniej
+          </p>
+
+          <h3 style="margin-top: 2rem">📱 Przydatne aplikacje</h3>
+
+          <p>
+            • <strong>Google Maps</strong> - nawigacja (wszystkie linki w
+            aplikacji!)<br />
+            • <strong>Libertas Dubrovnik</strong> - rozkład autobusów
+            miejskich<br />
+            • <strong>Weather app</strong> - sprawdzaj prognozę (kwiecień =
+            zmienne!)<br />
+            • <strong>XE Currency</strong> - przelicznik walut (HRK/EUR)
+          </p>
+
+          <h3 style="margin-top: 2rem">⚠️ Ważne wskazówki</h3>
+
+          <div class="alert">
+            <strong>💵 Gotówka:</strong> Niektóre miejsca (np. Buža Bar) tylko
+            cash! Miej przy sobie gotówkę.<br /><br />
+            <strong>🚶 Wygodne buty:</strong> Kamienne uliczki, schody, mury -
+            wygodne obuwie obowiązkowe!<br /><br />
+            <strong>🧥 Kurtka:</strong> Wieczory chłodne (7°C), zawsze miej
+            warstwę odzieży.<br /><br />
+            <strong>🌧️ Parasol:</strong> Kwiecień = deszczowy sezon, parasol w
+            plecaku!<br /><br />
+            <strong>💧 Woda:</strong> Noś butelkę - dostępne fontanny z pitną
+            wodą (Great Well 1438!).<br /><br />
+            <strong>⏰ Wcześnie wstawać:</strong> Mury o 9:00-9:30 = mniej ludzi
+            + lepsze zdjęcia!<br /><br />
+            <strong>🎫 Bilety online:</strong> Kolejka linowa, Lokrum - kupuj z
+            wyprzedzeniem (unikniesz kolejek)!
+          </div>
+
+          <h3 style="margin-top: 2rem">🇭🇷 Podstawowe zwroty</h3>
+
+          <p>
+            • <strong>Dobar dan</strong> - Dzień dobry<br />
+            • <strong>Hvala</strong> - Dziękuję<br />
+            • <strong>Molim</strong> - Proszę<br />
+            • <strong>Oprostite</strong> - Przepraszam<br />
+            • <strong>Koliko košta?</strong> - Ile to kosztuje?<br />
+            • <strong>Račun, molim</strong> - Rachunek, poproszę<br />
+            • <strong>Govorite li engleski?</strong> - Czy mówisz po angielsku?
+          </p>
+
+          <div class="tip-box">
+            <h4>💡 Pro tip:</h4>
+            <p>
+              Większość ludzi w turystycznych miejscach mówi po angielsku. Ale
+              użycie podstawowych zwrotów po chorwacku zawsze się ceni i otwiera
+              serca lokalnych! 😊
+            </p>
+          </div>
+
+          <h3 style="margin-top: 2rem">📞 Numery alarmowe</h3>
+
+          <p>
+            • <strong>112</strong> - Numer alarmowy (uniwersalny)<br />
+            • <strong>192</strong> - Policja<br />
+            • <strong>193</strong> - Straż pożarna<br />
+            • <strong>194</strong> - Pogotowie
+          </p>
+
+          <h3 style="margin-top: 2rem">🏥 Apteka/Zdrowie</h3>
+
+          <p>
+            • Apteki (Ljekarna) dostępne w centrum<br />
+            • EKUZ (Europejska Karta Ubezpieczenia Zdrowotnego) - weź ze
+            sobą!<br />
+            • Najbliższy szpital: Opća Bolnica Dubrovnik
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showTab(tabName) {
+        const tabs = document.querySelectorAll(".tab");
+        const contents = document.querySelectorAll(".tab-content");
+
+        tabs.forEach((tab) => tab.classList.remove("active"));
+        contents.forEach((content) => content.classList.remove("active"));
+
+        event.target.classList.add("active");
+        document.getElementById(tabName).classList.add("active");
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    </script>
+  </body>
+</html>
